@@ -12,4 +12,6 @@ pytest
 arxiv
 beautifulsoup4
 requests
+ragas
+datasets
 

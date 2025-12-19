@@ -16,7 +16,7 @@ def load_system():
         retriever = Retriever()
         return retriever
     except Exception as e:
-        st.error(f"Failed to load the system: {str(e)}. Please ensure the vector database exists (run `python build_index.py`) and your OPENAI_API_KEY is set in .env.")
+        st.error(f"Failed to load the system: {str(e)}. Please ensure the vector database exists (run `python build_index.py`) and your GROQ_API_KEY is set in .env.")
         return None
 
 retriever = load_system()
@@ -28,15 +28,20 @@ if retriever:
     # Query interface
     st.header("Ask Questions")
     query = st.text_input("Enter your question about AI and machine learning:")
+    use_hybrid = st.checkbox("Use hybrid search (vector + keyword)", value=False)
 
     if st.button("Get Answer"):
         if query:
             with st.spinner("Generating answer..."):
                 try:
-                    answer = retriever.query(query)
+                    answer = retriever.query(query, use_hybrid=use_hybrid)
                     st.success("Answer generated!")
                     st.write("**Question:**", query)
                     st.write("**Answer:**", answer)
+                    
+                    # Show retrieved docs count
+                    docs_count = len(retriever.vectorstore.similarity_search(query, k=3))
+                    st.info(f"Retrieved {docs_count} relevant documents.")
                 except Exception as e:
                     st.error(f"Error generating answer: {str(e)}")
         else:
@@ -45,6 +50,7 @@ if retriever:
     # Evaluation section
     st.header("System Evaluation")
     eval_query = st.text_input("Enter a question for evaluation (optional):", key="eval_query")
+    ground_truth_input = st.text_area("Enter ground truth for evaluation (optional):", key="ground_truth")
     if st.button("Run RAGAS Evaluation"):
         if eval_query:
             from rag.evaluator import Evaluator
@@ -54,8 +60,8 @@ if retriever:
             question = eval_query
             answer = retriever.query(question)
             contexts = [doc.page_content[:500] for doc in retriever.vectorstore.similarity_search(question, k=3)]
-            # For demo, use a simple ground truth or skip
-            ground_truth = "Sample ground truth for evaluation."
+            # Use provided ground truth or default
+            ground_truth = ground_truth_input if ground_truth_input else "Sample ground truth for evaluation."
 
             ragas_results = evaluator.evaluate_with_ragas(question, answer, contexts, ground_truth)
             st.write("RAGAS Evaluation Results:")

@@ -34,10 +34,11 @@ build_index.py          # Index building script
 - **PDF Support**: Load and index PDF documents with text extraction
 - **Multi-document Support**: Handle multiple PDF and text documents
 - **Semantic Search**: FAISS-based vector similarity search
-- **Generative QA**: OpenAI GPT integration for answer generation
+- **Hybrid Search**: Combine vector and keyword-based search (BM25)
+- **Generative QA**: Groq LLM integration for answer generation
 - **Academic Citations**: Responses include in-text citations from document metadata
-- **Web Interface**: Streamlit-based user interface
-- **Evaluation Metrics**: Built-in performance evaluation
+- **Web Interface**: Streamlit-based user interface with evaluation metrics
+- **Evaluation Metrics**: Built-in performance evaluation with RAGAS
 - **Modular Design**: Clean separation of concerns
 - **Extensible**: Easy to add new document types and sources
 
@@ -45,7 +46,7 @@ build_index.py          # Index building script
 
 ### Prerequisites
 - Python 3.8+
-- OpenAI API key
+- Groq API key
 
 ### Installation
 
@@ -63,7 +64,7 @@ build_index.py          # Index building script
 3. Set up environment variables:
    ```bash
    cp .env.example .env
-   # Edit .env and add your OPENAI_API_KEY
+   # Edit .env and add your GROQ_API_KEY
    ```
 
 4. Build the vector index:
@@ -81,6 +82,7 @@ build_index.py          # Index building script
 ### Web Interface
 - Open the Streamlit app in your browser
 - Enter questions about AI, machine learning, NLP, computer vision, or deep learning
+- Choose between standard vector search or hybrid search (vector + keyword)
 - View generated answers and evaluation metrics
 
 ### Programmatic Usage
@@ -129,19 +131,17 @@ The system includes evaluation metrics for:
 - Retrieval precision, recall, and F1-score
 - Generation quality (Jaccard similarity, response length)
 
-## Future Enhancements
+## Security
 
-- Support for PDF and other document formats
-- Hybrid search (keyword + semantic)
-- Multi-language support
-- User feedback collection
-- Advanced evaluation metrics
-- Deployment to cloud platforms
+- API keys are stored in `.env` file (not committed to version control)
+- Use strong, unique API keys for production
+- Regularly rotate API keys
+- Never share `.env` files or commit them to repositories
 
 ## Technologies Used
 
 - **LangChain**: Framework for LLM applications
-- **OpenAI**: Embeddings and language models
+- **Groq**: Embeddings and language models
 - **FAISS**: Vector similarity search
 - **Streamlit**: Web interface
 - **Scikit-learn**: Evaluation metrics
